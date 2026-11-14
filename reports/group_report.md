@@ -13,7 +13,7 @@
 | Thành viên và vai trò | Nguyễn Trường Nam (2A202604067) · Bài cá nhân. Phụ trách tích hợp, chạy thử, kiểm thử, duyệt ảnh và trình bày. |
 | Git URL | [Repo bài tập](https://github.com/ntnguyen03/K5-Day6-L2b-NguyenTruongNam-2A202604067-DataGovernanceAndPrivacy) |
 | Tag `demo-180m` (commit) |  |
-| Tag `final-24h` (commit) |  |
+| Tag `final-24h` (commit) | 68bf643 |
 | Deadline (giờ VN) | 12h00 15/11/2026 |
 
 ## 01 · Problem statement
@@ -47,17 +47,14 @@
 
 ## 04 · Baseline vs PoC
 
-- Baseline (mô tả, version/config, commit): ____
-- PoC (mô tả, version/config, commit): ____
-- Cùng budget / cùng heldout / cùng seed: xác nhận ____
-
-**Bảng 1 · Baseline vs PoC & hard slices** — dán output của
-`python -m src.compare reports/metrics_baseline.json reports/metrics_poc.json`:
 
 Baseline: `baseline` (git b0ce8bf, seed 42) · PoC: `poc` (git b0ce8bf, seed 42)
 - **Baseline Laplacian:** `src/baseline_t02.py` xếp hạng bằng `1 / (LaplacianVariance + 1e-6)`. Baseline ngẫu nhiên trong starter dùng để kiểm tra luồng ban đầu.
 - **PoC:** `src/pipeline.py` lấy giá trị lớn nhất từ ba tín hiệu. Mờ dùng `35 / max(LaplacianVariance, 0.01)`. Tối dùng mức tham chiếu day/dusk/night là 45/32/18 chia cho `max(mean_gray, 1)`. Lóa dùng tỷ lệ pixel có luma trên 245 lớn nhất trong lưới 4 × 4, chia cho 0,40.
 - Cả hai dùng 40 ảnh eval, cùng nhãn nội bộ, B = 20 và seed 42. SHA `b0ce8bf` do script ghi là HEAD lúc đo. Các thay đổi T02 lúc chạy nằm trong bản làm việc. Điền SHA triển khai ở mục 10 sau khi commit.
+
+**Bảng 1 · Baseline vs PoC & hard slices** — dán output của
+`python -m src.compare reports/metrics_baseline.json reports/metrics_poc.json`:
 
 | Metric (unit) | Slice | Baseline | PoC | Δ abs | Δ rel | Better | N |
 |---|---|---|---|---|---|---|---|
@@ -132,7 +129,7 @@ Chạy trong CMD ở thư mục gốc repo. Sau khi cài `requirements.txt` vào
 
 | Học viên | Git author/email | Module / vai trò | Commit SHA / diff chứng minh | Trình bày? |
 |---|---|---|---|---|
-| Nguyễn Trường Nam (2A202604067) | [Điền Git author/email thực tế] | Cấu hình và tích hợp T02, trực tiếp duyệt ảnh, chạy đánh giá và kiểm thử | · `configs/lab.yaml`, `src/pipeline.py`, `src/baseline_t02.py`, `tests/test_t02_pipeline.py`, `reports/` | Không |
+| Nguyễn Trường Nam (2A202604067) | [Điền Git author/email thực tế] | Cấu hình và tích hợp T02, trực tiếp duyệt ảnh, chạy đánh giá và kiểm thử | 68bf643 · `configs/lab.yaml`, `src/pipeline.py`, `src/baseline_t02.py`, `tests/test_t02_pipeline.py`, `reports/` | Không |
 
 ## 11 · References
 
