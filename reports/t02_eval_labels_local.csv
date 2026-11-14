@@ -1,0 +1,41 @@
+image_id,path,light,split,defect_type,is_defect,label_note
+img_01_0,images/img_01_0.jpg,night,eval,none,0,"Cảnh đêm nhưng xe, vạch đường và biển báo vẫn phân biệt được."
+img_01_1,images/img_01_1.jpg,night,eval,none,0,Cạnh xe và biển báo rõ trong điều kiện ban đêm.
+img_01_2,images/img_01_2.jpg,night,eval,dark,1,"Mặt đường và viền xe chìm vào nền đen, mất chi tiết vùng tối."
+img_01_3,images/img_01_3.jpg,night,eval,compression,1,Nền và mặt đường vỡ thành khối; đèn và viền xe có nhiễu rõ.
+img_03_0,images/img_03_0.jpg,night,eval,blur,1,Mờ nhẹ quanh biển số và cạnh xe; hình dáng đối tượng vẫn nhận ra.
+img_03_1,images/img_03_1.jpg,night,eval,none,0,"Biển báo, người và cạnh xe rõ trong cảnh đêm."
+img_03_2,images/img_03_2.jpg,night,eval,glare,1,Quầng sáng giữa ảnh làm nhạt đường và giảm tương phản quanh xe xanh.
+img_03_3,images/img_03_3.jpg,night,eval,compression,1,Các dải khối trong nền trời và nhiễu quanh đèn làm bệt chi tiết.
+img_05_0,images/img_05_0.jpg,day,eval,none,0,"Cạnh tòa nhà, xe và người rõ; độ sáng đều."
+img_05_1,images/img_05_1.jpg,day,eval,none,0,"Biển báo và các xe vẫn có cạnh rõ, không thấy vùng mất chi tiết."
+img_05_2,images/img_05_2.jpg,day,eval,compression,1,Bầu trời và mặt đường bị chia khối; có viền giả quanh nhà và xe.
+img_05_3,images/img_05_3.jpg,day,eval,glare,1,Đốm trắng cục bộ che một phần cụm xe bên trái.
+img_06_0,images/img_06_0.jpg,night,eval,blur,1,Viền biển báo và biển số mềm nhẹ; xe vẫn nhận ra được.
+img_06_1,images/img_06_1.jpg,night,eval,none,0,"Đường biên của biển báo, xe và người vẫn rõ dù là cảnh đêm."
+img_06_2,images/img_06_2.jpg,night,eval,compression,1,"Khối vuông lớn ở nền trời và mặt đường, nhiễu rõ quanh xe."
+img_06_3,images/img_06_3.jpg,night,eval,glare,1,Quầng sáng giữa ảnh làm bạc mặt đường và xe ở giữa.
+img_13_0,images/img_13_0.jpg,night,eval,none,0,Cạnh xe và vạch đường rõ; nền tối phù hợp cảnh đêm.
+img_13_1,images/img_13_1.jpg,night,eval,none,0,"Các xe và người tách bạch khỏi nền tối, viền vẫn rõ."
+img_13_2,images/img_13_2.jpg,night,eval,compression,1,"Nền trời thành các mảng khối, biển số và viền xe có nhiễu."
+img_13_3,images/img_13_3.jpg,night,eval,blur,1,"Mờ mạnh toàn ảnh; biển báo, xe và người đều mất đường biên rõ."
+img_15_0,images/img_15_0.jpg,dusk,eval,blur,1,Biển số và cạnh các xe hơi nhòe; vẫn nhận ra vật thể chính.
+img_15_1,images/img_15_1.jpg,dusk,eval,none,0,"Cạnh xe và người rõ, còn đủ chi tiết trong cảnh chạng vạng."
+img_15_2,images/img_15_2.jpg,dusk,eval,blur,1,"Xe, người và dãy nhà đều nhòe mạnh; biển số mất chi tiết."
+img_15_3,images/img_15_3.jpg,dusk,eval,dark,1,"Phần lớn mặt đường và phương tiện chìm trong tối, chỉ còn vài đường viền."
+img_16_0,images/img_16_0.jpg,day,eval,none,0,"Biển báo, vạch đường và viền xe rõ."
+img_16_1,images/img_16_1.jpg,day,eval,none,0,"Xe, người và vạch đường vẫn sắc nét."
+img_16_2,images/img_16_2.jpg,day,eval,blur,1,"Cạnh xe và các tòa nhà nhòe, biển số khó đọc dù vẫn thấy đối tượng."
+img_16_3,images/img_16_3.jpg,day,eval,compression,1,"Có dải màu bậc thang trên trời và viền giả quanh tòa nhà, xe."
+img_17_0,images/img_17_0.jpg,day,eval,none,0,"Biển báo, người và các xe có đường biên rõ."
+img_17_1,images/img_17_1.jpg,day,eval,none,0,Chi tiết xe và vạch đường còn rõ; ánh sáng phù hợp cảnh ngày.
+img_17_2,images/img_17_2.jpg,day,eval,glare,1,Vùng sáng trắng lớn che mất phần giữa cảnh và lấn vào vùng có phương tiện.
+img_17_3,images/img_17_3.jpg,day,eval,dark,1,Ảnh ban ngày tối bất thường; đường và người gần như mất chi tiết.
+img_19_0,images/img_19_0.jpg,day,eval,none,0,"Cạnh xe, biển báo và người sắc nét."
+img_19_1,images/img_19_1.jpg,day,eval,none,0,Các xe và vạch đường có đường viền rõ.
+img_19_2,images/img_19_2.jpg,day,eval,compression,1,Có dải và viền giả quanh dãy nhà; chi tiết trên xe bị bệt.
+img_19_3,images/img_19_3.jpg,day,eval,blur,1,Biển báo và cạnh xe nhòe; vẫn nhận ra các đối tượng lớn.
+img_23_0,images/img_23_0.jpg,day,eval,none,0,"Biển báo, xe và người rõ; mặt đường còn đủ chi tiết."
+img_23_1,images/img_23_1.jpg,day,eval,none,0,"Độ sáng đều, đường nét của xe và người rõ."
+img_23_2,images/img_23_2.jpg,day,eval,compression,1,Nền trời và mặt đường vỡ khối; có viền giả quanh nhà và xe.
+img_23_3,images/img_23_3.jpg,day,eval,dark,1,Cảnh ban ngày bị tối mạnh; phương tiện và người khó tách khỏi nền.

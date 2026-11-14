@@ -37,51 +37,150 @@ def load(ctx: RunContext) -> dict:
     data = {"manifest": pd.read_csv(manifest) if manifest.exists() else None}
     # TODO: load the tables/images your track needs, e.g.
     # data["images"] = pd.read_csv(ctx.input_dir / "images.csv")
+    data["images"] = pd.read_csv(ctx.input_dir / "images.csv")
     return data
 
 
 # ---------------------------------------------------------------- 02 process
 def process(ctx: RunContext, data: dict) -> pd.DataFrame:
-    spec = get_track(ctx.track)
-    raise NotImplementedError(
-        f"Implement process() for {spec.track} ({spec.title}). It must produce a DataFrame with at least "
-        f"{spec.pred_columns} (saved as out/{spec.pred_file}). See docs/tracks/{spec.track.upper()}.md"
-    )
+    from .common.image_ops import laplacian_variance, load_rgb, to_gray
+
+    rows = []
+    for row in data["images"].itertuples(index=False):
+        image = load_rgb(ctx.input_dir / row.path)
+        gray = to_gray(image)
+
+        sharpness = laplacian_variance(gray)
+        blur_score = 35.0 / max(sharpness, 0.01)
+
+        # Cảnh đêm có mức sáng kỳ vọng thấp hơn cảnh ban ngày.
+        dark_limit = {"day": 45, "dusk": 32, "night": 18}.get(row.light, 45)
+        dark_score = dark_limit / max(float(gray.mean()), 1.0)
+
+        # Tìm vùng lóa cục bộ trên lưới 4 × 4.
+        height, width = gray.shape
+        glare_fraction = max(
+            float((gray[y * height // 4:(y + 1) * height // 4,
+                        x * width // 4:(x + 1) * width // 4] > 245).mean())
+            for y in range(4)
+            for x in range(4)
+        )
+        glare_score = glare_fraction / 0.40
+
+        signals = {"blur": blur_score, "dark": dark_score, "glare": glare_score}
+        strongest = max(signals, key=signals.get)
+        score = signals[strongest]
+
+        rows.append({
+            "image_id": row.image_id,
+            "score": score,
+            "reason": strongest,
+            "pred_defect_type": strongest if score >= 1 else "none",
+            "pred_action": "RECAPTURE" if score >= 1 else "KEEP",
+            "path": row.path,
+            "light": row.light,
+            "split": row.split,
+        })
+
+    return pd.DataFrame(rows)
 
 
 # ---------------------------------------------------------------- 03 rank
 def rank(ctx: RunContext, scored: pd.DataFrame) -> pd.DataFrame:
-    """Default: top-B by `score`. Adapt id/score/reason columns to your track."""
+    from .common.contact_sheet import render_contact_sheet
+
+    eval_images = scored.loc[scored["split"] == "eval"]
     budget = int(ctx.param("budget", 20))
-    if "score" not in scored.columns:
-        raise ValueError("rank(): process() output needs a numeric `score` column (higher = review first), "
-                         "or adapt rank() to your track")
-    q = make_review_queue(scored, id_col=scored.columns[0], score_col="score", budget=budget,
-                          reason_col="reason" if "reason" in scored.columns else None)
-    write_review_queue(q, ctx.out("review_queue.csv"))
-    return q
+
+    queue = make_review_queue(
+        eval_images,
+        id_col="image_id",
+        score_col="score",
+        budget=budget,
+        reason_col="reason",
+        action_col="pred_action",
+        slice_col="light",
+        evidence_col="path",
+    )
+
+    write_review_queue(queue, ctx.out("review_queue.csv"))
+    render_contact_sheet(
+        queue,
+        ctx.out("contact_sheet.html"),
+        image_root=ctx.input_dir,
+        title="T02 – Review 20 ảnh ưu tiên",
+    )
+    return queue
 
 
 # ---------------------------------------------------------------- 04 review
 def review(ctx: RunContext, scored: pd.DataFrame, queue: pd.DataFrame) -> pd.DataFrame:
-    """If a reviewed queue exists (out/review_queue_reviewed.csv), apply it. Otherwise pass through.
+    from .common.review import apply_overrides
 
-    TODO: decide what an `edit` / `reject` means for your track and apply it
-    (e.g. via common.review.apply_overrides), logging every change to ctx.audit.
-    """
-    reviewed_path = ctx.output_dir / "review_queue_reviewed.csv"
-    if reviewed_path.exists():
-        reviewed = load_review_decisions(reviewed_path)
-        ctx.stats["n_reviewed"] = len(reviewed)
-        # TODO: apply overrides
-    return scored
+    final = scored.copy()
+    final["review_state"] = "not_queued"
+    final.loc[final["image_id"].isin(queue["item_id"]), "review_state"] = "pending"
+
+    reviewed_path = ctx.out("review_queue_reviewed.csv")
+    if not reviewed_path.exists():
+        return final
+
+    reviewed = load_review_decisions(
+        reviewed_path, allowed={"approve", "edit", "escalate", "skip"}
+    )
+    if reviewed["item_id"].duplicated().any():
+        raise ValueError("CSV review có ID ảnh trùng")
+    if not reviewed["item_id"].isin(queue["item_id"]).all():
+        raise ValueError("CSV review có ảnh ngoài hàng đợi hiện tại")
+
+    edits = reviewed["reviewer_decision"] == "edit"
+    if not reviewed.loc[edits, "override_value"].isin({"KEEP", "RECAPTURE"}).all():
+        raise ValueError("Quyết định edit cần override_value là KEEP hoặc RECAPTURE")
+
+    final = apply_overrides(final, reviewed, "image_id", "pred_action", ctx.audit)
+    for row in reviewed.itertuples(index=False):
+        mask = final["image_id"] == row.item_id
+        final.loc[mask, "review_state"] = row.reviewer_decision
+        if row.reviewer_decision != "edit":
+            ctx.audit.log(
+                actor=row.reviewer,
+                action=row.reviewer_decision,
+                item_id=row.item_id,
+                reason=row.review_note,
+            )
+
+    ctx.stats["n_reviewed"] = len(reviewed)
+    return final
 
 
 # ---------------------------------------------------------------- 05 decide
 def decide(ctx: RunContext, final: pd.DataFrame) -> Decision:
-    # TODO: replace with your policy (thresholds frozen BEFORE looking at eval results)
-    return Decision(status="HOLD", reason_code="POLICY_NOT_IMPLEMENTED", reason="Decision policy not implemented yet",
-                    owner=ctx.config.get("owner", "TODO-owner"), scope=ctx.track)
+    queued = final.loc[final["review_state"] != "not_queued"]
+    resolved = queued["review_state"].isin({"approve", "edit"})
+    recapture = int((resolved & (queued["pred_action"] == "RECAPTURE")).sum())
+
+    if queued.empty or not resolved.all():
+        status = "HOLD"
+        reason_code = "REVIEW_INCOMPLETE"
+        reason = "Hàng đợi còn ảnh chưa được giải quyết."
+    elif recapture:
+        status = "RECAPTURE"
+        reason_code = "REVIEW_CONFIRMED_RECAPTURE"
+        reason = f"Người duyệt xác nhận {recapture} ảnh cần chụp lại."
+    else:
+        status = "KEEP"
+        reason_code = "REVIEW_ALL_KEEP"
+        reason = "Người duyệt đồng ý giữ tất cả ảnh trong hàng đợi."
+
+    return Decision(
+        status=status,
+        reason_code=reason_code,
+        reason=reason,
+        owner=ctx.config["owner"],
+        scope=ctx.track,
+        evidence=["review_queue_reviewed.csv", "audit_log.jsonl", "ranked_review.csv"],
+        metrics={"queued": len(queued), "resolved": int(resolved.sum()), "recapture": recapture},
+    )
 
 
 def run(ctx: RunContext) -> None:

@@ -1,0 +1,19 @@
+{
+  "status": "RECAPTURE",
+  "reason_code": "REVIEW_CONFIRMED_RECAPTURE",
+  "reason": "Người duyệt xác nhận 7 ảnh cần chụp lại.",
+  "owner": "Nguyễn Trường Nam",
+  "scope": "t02",
+  "evidence": [
+    "review_queue_reviewed.csv",
+    "audit_log.jsonl",
+    "ranked_review.csv"
+  ],
+  "metrics": {
+    "queued": 20,
+    "resolved": 20,
+    "recapture": 7
+  },
+  "ts": "2026-11-14T10:12:32+00:00",
+  "canonical": "REWORK"
+}
