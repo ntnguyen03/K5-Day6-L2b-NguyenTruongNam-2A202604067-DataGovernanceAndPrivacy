@@ -10,7 +10,7 @@
 |---|---|
 | Group ID | T065 |
 | Challenge | T02 · Raw QC Triage |
-| Thành viên và vai trò | Nguyễn Trường Nam (2A202604067) · Bài cá nhân. Phụ trách tích hợp, chạy thử, kiểm thử, duyệt ảnh và trình bày. |
+| Thành viên và vai trò | Nguyễn Trường Nam (2A202604067) · Bài cá nhân. Phụ trách tích hợp, chạy thử, kiểm thử, duyệt ảnh |
 | Git URL | [Repo bài tập](https://github.com/ntnguyen03/K5-Day6-L2b-NguyenTruongNam-2A202604067-DataGovernanceAndPrivacy) |
 | Tag `demo-180m` (commit) |  |
 | Tag `final-24h` (commit) | 68bf643 |
@@ -129,7 +129,7 @@ Chạy trong CMD ở thư mục gốc repo. Sau khi cài `requirements.txt` vào
 
 | Học viên | Git author/email | Module / vai trò | Commit SHA / diff chứng minh | Trình bày? |
 |---|---|---|---|---|
-| Nguyễn Trường Nam (2A202604067) | [Điền Git author/email thực tế] | Cấu hình và tích hợp T02, trực tiếp duyệt ảnh, chạy đánh giá và kiểm thử | 68bf643 · `configs/lab.yaml`, `src/pipeline.py`, `src/baseline_t02.py`, `tests/test_t02_pipeline.py`, `reports/` | Không |
+| Nguyễn Trường Nam (2A202604067) | Nam Nguyen/truongnam0304@gmail.com | Cấu hình và tích hợp T02, trực tiếp duyệt ảnh, chạy đánh giá và kiểm thử | 68bf643 · `configs/lab.yaml`, `src/pipeline.py`, `src/baseline_t02.py`, `tests/test_t02_pipeline.py`, `reports/` | Không |
 
 ## 11 · References
 
